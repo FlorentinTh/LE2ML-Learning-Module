@@ -1,3 +1,4 @@
+import math
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 
@@ -20,13 +21,13 @@ class ModelBuilder:
             n_jobs=-1)
 
     @staticmethod
-    def _buildRandomForest(properties):
+    def _buildRandomForest(properties, feature_count):
         n_estimators = properties['num_trees']
         criterion = properties['criterion']
 
         max_features = properties['max_features']
-        # if max_features == 'demi_sqrt':
-        #     pass
+        if max_features == 'demi_sqrt':
+            max_features = math.floor(math.sqrt(feature_count) / 2)
 
         return RandomForestClassifier(
             n_estimators=n_estimators, criterion=criterion,
