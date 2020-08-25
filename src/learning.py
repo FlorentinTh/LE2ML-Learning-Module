@@ -9,10 +9,11 @@ from sklearn.model_selection import cross_val_predict, KFold
 
 
 class Learning:
-    def __init__(self, conf):
+    def __init__(self, conf, container_name):
         self.__user = os.getenv('DATA_USER_ID')
         self.__job = os.getenv('DATA_JOB_ID')
         self.__conf = conf
+        self._container_name = container_name
         self.__properties = conf['algorithm']['parameters']
         self.__model = None
         self.__data = None
@@ -27,7 +28,11 @@ class Learning:
             self.__job,
             'features.csv')
 
-        read_data = pd.read_csv(dataset, skiprows=1, header=None)
+        try:
+            read_data = pd.read_csv(dataset, skiprows=1, header=None)
+        except Exception as error:
+            raise Exception(str(error))
+
         num_col = len(read_data.columns)
 
         num_data = read_data.apply(pd.to_numeric, errors='coerce')
@@ -38,8 +43,11 @@ class Learning:
         std_sc = StandardScaler()
         self.__data = std_sc.fit_transform(data)
 
-        self.__feature_count = len(pd.read_csv(
-            dataset, index_col=0, nrows=1).columns)
+        try:
+            self.__feature_count = len(pd.read_csv(
+                dataset, index_col=0, nrows=1).columns)
+        except Exception as error:
+            raise Exception(str(error))
 
     def __getConfusionMatrixHeader(self):
         return list(np.insert(np.unique(self.__labels), 0, '', axis=0))
@@ -48,14 +56,23 @@ class Learning:
         source = self.__conf['source']
         model_filename = self.__conf['model'] + '.model'
 
-        model_save_path = os.path.join(
+        dest_folder_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
             self.__user,
             'data',
             source,
             'models',
-            model_filename)
-        pickle.dump(self.__model, open(model_save_path, 'wb'))
+            self._container_name)
+
+        if not os.path.exists(dest_folder_path):
+            os.makedirs(dest_folder_path)
+
+        model_save_path = os.path.join(dest_folder_path, model_filename)
+
+        try:
+            pickle.dump(self.__model, open(model_save_path, 'wb'))
+        except Exception as error:
+            raise Exception(str(error))
 
     def __openExistingModel(self):
         source = self.__conf['source']
@@ -67,9 +84,13 @@ class Learning:
             'data',
             source,
             'models',
+            self._container_name,
             model_filename)
 
-        return pickle.load(open(model_file_path, 'rb'))
+        try:
+            return pickle.load(open(model_file_path, 'rb'))
+        except Exception as error:
+            raise Exception(str(error))
 
     def buildModel(self):
         self.__makeData()
@@ -81,7 +102,7 @@ class Learning:
             self.__model = ModelBuilder._buildRandomForest(
                 self.__properties, self.__feature_count)
         else:
-            print('error, not implemented yet')
+            raise Exception('Algorithm is not implemented yet.')
 
     def trainModel(self):
         self.__model.fit(self.__data, self.__labels)
@@ -115,27 +136,32 @@ class Learning:
                     self.__job,
                     filename)
             else:
-                print('error, input file type does not match')
+                raise Exception('Input file type does not exists.')
 
-            test_data = pd.read_csv(test_file_path, skiprows=1, header=None)
+            try:
+                test_data = pd.read_csv(
+                    test_file_path, skiprows=1, header=None)
+            except Exception as error:
+                raise Exception(str(error))
+
             num_test_data = test_data.apply(
                 pd.to_numeric, errors='coerce').values
             saved_model = self.__openExistingModel()
             return saved_model.predict(num_test_data)
         else:
-            print('error, process does not match')
+            raise Exception('Process entry not expected.')
 
     def getMetrics(self, cross_validation):
         results = []
         accuracy = metrics.accuracy_score(self.__labels, cross_validation)
-        results.append(accuracy*100.0)
+        results.append(round(accuracy*100.0, 2))
 
         f1_score = metrics.f1_score(
             self.__labels, cross_validation, average='weighted')
-        results.append(f1_score*100.0)
+        results.append(round(f1_score*100.0))
 
         kappa = metrics.cohen_kappa_score(self.__labels, cross_validation)
-        results.append(kappa*100.0)
+        results.append(round(kappa*100.0))
 
         return results
 
@@ -151,5 +177,22 @@ class Learning:
             self.__job,
             'matrix.csv')
 
-        pd.DataFrame(conf_mat_join).to_csv(
-            output_path, header=headers, index=False)
+        try:
+            pd.DataFrame(conf_mat_join).to_csv(
+                output_path, header=headers, index=False)
+        except Exception as error:
+            raise Exception(str(error))
+
+    def writePredictionsToFile(self, predictions):
+        output_path = os.path.join(
+            os.getenv('DATA_BASE_PATH'),
+            self.__user,
+            'jobs',
+            self.__job,
+            'predictions.csv')
+
+        try:
+            pd.DataFrame(predictions).to_csv(
+                output_path, header=None, index=True)
+        except Exception as error:
+            raise Exception(str(error))

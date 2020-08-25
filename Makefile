@@ -6,9 +6,13 @@ init:
 	python -m venv .venv
 	.venv\scripts\activate
 
-install:
+dev:
 	${PYTHON} -m pip install --upgrade pip
 	${PIP} install -r dev.requirements.txt
+
+build:
+    ${PYTHON} -m pip install --upgrade pip
+	${PIP} install -r prod.requirements.txt
 
 lint:
 	${FLAKE8} src/
