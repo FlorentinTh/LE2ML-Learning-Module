@@ -14,7 +14,12 @@ class Learning:
         self.__job = os.getenv('DATA_JOB_ID')
         self.__conf = conf
         self._container_name = container_name
-        self.__properties = conf['algorithm']['parameters']
+
+        if 'parameters' in conf['algorithm']:
+            self.__properties = conf['algorithm']['parameters']
+        else:
+            self.__properties = None
+
         self.__model = None
         self.__data = None
         self.__labels = None
@@ -121,13 +126,6 @@ class Learning:
             test_file_path = None
 
             if file_type == 'features':
-                test_file_path = os.path.join(
-                    os.getenv('DATA_BASE_PATH'),
-                    self.__user,
-                    'jobs',
-                    self.__job,
-                    'features.csv')
-            elif file_type == 'raw':
                 filename = self.__conf['input']['file']['filename']
                 test_file_path = os.path.join(
                     os.getenv('DATA_BASE_PATH'),
@@ -135,12 +133,23 @@ class Learning:
                     'jobs',
                     self.__job,
                     filename)
+            elif file_type == 'raw':
+                test_file_path = os.path.join(
+                    os.getenv('DATA_BASE_PATH'),
+                    self.__user,
+                    'jobs',
+                    self.__job,
+                    'features.csv')
             else:
                 raise Exception('Input file type does not exists.')
 
             try:
-                test_data = pd.read_csv(
-                    test_file_path, skiprows=1, header=None)
+                test_data = pd.read_csv(test_file_path)
+                columns = list(test_data)
+
+                if 'label' in columns:
+                    test_data = test_data.drop('label', 1)
+
             except Exception as error:
                 raise Exception(str(error))
 
