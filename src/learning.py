@@ -28,9 +28,6 @@ class Learning:
     def __makeData(self):
         dataset = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self.__user,
-            'jobs',
-            self.__job,
             'features.csv')
 
         try:
@@ -58,21 +55,10 @@ class Learning:
         return list(np.insert(np.unique(self.__labels), 0, '', axis=0))
 
     def __saveTrainedModel(self):
-        source = self.__conf['source']
-        model_filename = self.__conf['model'] + '.model'
-
-        dest_folder_path = os.path.join(
+        model_filename = self.__conf['model']
+        model_save_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self.__user,
-            'data',
-            source,
-            'models',
-            self._container_name)
-
-        if not os.path.exists(dest_folder_path):
-            os.makedirs(dest_folder_path)
-
-        model_save_path = os.path.join(dest_folder_path, model_filename)
+            model_filename)
 
         try:
             pickle.dump(self.__model, open(model_save_path, 'wb'))
@@ -80,16 +66,10 @@ class Learning:
             raise Exception(str(error))
 
     def __openExistingModel(self):
-        source = self.__conf['source']
-        model_filename = self.__conf['model'] + '.model'
+        model_filename = self.__conf['model']
 
         model_file_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self.__user,
-            'data',
-            source,
-            'models',
-            self._container_name,
             model_filename)
 
         try:
@@ -129,16 +109,10 @@ class Learning:
                 filename = self.__conf['input']['file']['filename']
                 test_file_path = os.path.join(
                     os.getenv('DATA_BASE_PATH'),
-                    self.__user,
-                    'jobs',
-                    self.__job,
                     filename)
             elif file_type == 'raw':
                 test_file_path = os.path.join(
                     os.getenv('DATA_BASE_PATH'),
-                    self.__user,
-                    'jobs',
-                    self.__job,
                     'features.csv')
             else:
                 raise Exception('Input file type does not exists.')
@@ -181,9 +155,6 @@ class Learning:
 
         output_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self.__user,
-            'jobs',
-            self.__job,
             'matrix.csv')
 
         try:
@@ -195,9 +166,6 @@ class Learning:
     def writePredictionsToFile(self, predictions):
         output_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self.__user,
-            'jobs',
-            self.__job,
             'predictions.csv')
 
         try:

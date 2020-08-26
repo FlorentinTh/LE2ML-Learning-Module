@@ -19,9 +19,6 @@ class Task:
     def get_conf_file(self):
         conf_file_path = os.path.join(
             os.getenv('DATA_BASE_PATH'),
-            self._user,
-            'jobs',
-            self._job,
             'conf.json')
 
         try:
@@ -34,7 +31,7 @@ class Task:
 
     def success(self, results=None):
         url = self.__base_api_url + '/jobs/' + self._job + '/tasks/complete'
-        cert = os.path.join(self.__certs_path, 'cert.pem')
+        # cert = os.path.join(self.__certs_path, 'cert.pem')
         headers = {'app-key': os.getenv('API_APP_KEY')}
         body = {
             "task": "learning",
@@ -48,7 +45,7 @@ class Task:
         try:
             request = requests.post(
                 url, headers=headers, data=body,
-                verify=cert)
+                verify=False)
 
             if request.status_code == 200:
                 print(
@@ -59,17 +56,17 @@ class Task:
                 self.error()
 
         except requests.exceptions.RequestException as error:
-            print('[API] :' + error)
+            print('[API] :' + str(error))
 
     def error(self):
         url = self.__base_api_url + '/jobs/' + self._job + '/tasks/error?task=' + self.__name
-        cert = os.path.join(self.__certs_path, 'cert.pem')
+        # cert = os.path.join(self.__certs_path, 'cert.pem')
         headers = {'app-key': os.getenv('API_APP_KEY')}
 
         try:
             request = requests.post(
                 url, headers=headers,
-                verify=cert)
+                verify=False)
 
             if request.status_code == 200:
                 print(
@@ -78,4 +75,4 @@ class Task:
                     ' successfully updated (STATUS: FAILED).')
 
         except requests.exceptions.RequestException as error:
-            print('[API] :' + error)
+            print('[API] :' + str(error))

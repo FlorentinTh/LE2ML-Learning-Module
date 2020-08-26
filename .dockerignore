@@ -1,0 +1,11 @@
+.venv/
+.vscode/
+.editorconfig
+.git*
+*.md
+dev.requirements.txt
+LICENSE
+Makefile
+Dockerfile
+.dockerignore
+docker-compose.yml
