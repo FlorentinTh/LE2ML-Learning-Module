@@ -31,7 +31,6 @@ class Task:
 
     def success(self, results=None):
         url = self.__base_api_url + '/jobs/' + self._job + '/tasks/complete'
-        # cert = os.path.join(self.__certs_path, 'cert.pem')
         headers = {'app-key': os.getenv('API_APP_KEY')}
         body = {
             "task": "learning",
@@ -60,7 +59,6 @@ class Task:
 
     def error(self):
         url = self.__base_api_url + '/jobs/' + self._job + '/tasks/error?task=' + self.__name
-        # cert = os.path.join(self.__certs_path, 'cert.pem')
         headers = {'app-key': os.getenv('API_APP_KEY')}
 
         try:
