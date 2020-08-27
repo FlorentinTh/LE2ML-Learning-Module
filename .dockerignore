@@ -1,3 +1,4 @@
+.git/
 .venv/
 .vscode/
 .editorconfig
@@ -9,3 +10,4 @@ Makefile
 Dockerfile
 .dockerignore
 docker-compose.yml
+Dockerfile
