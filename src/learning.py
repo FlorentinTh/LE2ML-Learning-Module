@@ -26,9 +26,17 @@ class Learning:
         self.__feature_count = 0
 
     def __makeData(self):
-        dataset = os.path.join(
-            os.getenv('DATA_BASE_PATH'),
-            'features.csv')
+
+        file_type = self.__conf['input']['file']['type']
+
+        file = None
+        if file_type == 'features':
+            file = self.__conf['input']['file']['filename']
+        else:
+            file = 'features.csv'
+
+        dataset = os.path.join(os.path.abspath(
+            os.getenv('DATA_BASE_PATH')), file)
 
         try:
             read_data = pd.read_csv(dataset, skiprows=1, header=None)
@@ -55,10 +63,9 @@ class Learning:
         return list(np.insert(np.unique(self.__labels), 0, '', axis=0))
 
     def __saveTrainedModel(self):
-        model_filename = self.__conf['model']
-        model_save_path = os.path.join(
-            os.getenv('DATA_BASE_PATH'),
-            model_filename)
+        model_filename = self.__conf['model'] + '.model'
+        model_save_path = os.path.join(os.path.abspath(
+            os.getenv('DATA_BASE_PATH')), model_filename)
 
         try:
             pickle.dump(self.__model, open(model_save_path, 'wb'))
