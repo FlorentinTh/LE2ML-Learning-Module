@@ -17,5 +17,8 @@ build:
 lint:
 	${FLAKE8} src/
 
+update:
+    ${PIP} freeze | %{$_.split('==')[0]} | %{${PIP} install --upgrade $_}
+
 run:
 	${PYTHON} src/main.py
