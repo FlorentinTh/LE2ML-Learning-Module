@@ -1,8 +1,8 @@
-# PiCluster-Learning
+# LE2ML-Learning-Module
 
-[![GitHub Release](https://img.shields.io/github/release/FlorentinTh/PiCluster-Learning?style=flat-square)](https://github.com/FlorentinTh/PiCluster-Learning/releases) [![GitHub](https://img.shields.io/github/license/FlorentinTh/PiCluster-Learning?style=flat-square)](https://github.com/FlorentinTh/PiCluster-Learning/blob/master/LICENSE)
+[![GitHub Release](https://img.shields.io/github/release/FlorentinTh/LE2ML-Learning-Module?style=flat-square)](https://github.com/FlorentinTh/LE2ML-Learning-Module/releases) [![GitHub](https://img.shields.io/github/license/FlorentinTh/LE2ML-Learning-Module?style=flat-square)](https://github.com/FlorentinTh/LE2ML-Learning-Module/blob/master/LICENSE)
 
-Repository of the learning module for the PiCluster project.
+Repository of the learning module for the LE2ML workbench.
 
 ## Authors
 
