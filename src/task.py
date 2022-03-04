@@ -42,6 +42,8 @@ class Task:
             body['results'] = results
 
         try:
+            # deepcode ignore TLSCertVerificationDisabled:
+            # self-signed SSL certificates...
             request = requests.post(
                 url, headers=headers, data=body,
                 verify=False)
@@ -62,6 +64,8 @@ class Task:
         headers = {'app-key': os.getenv('API_APP_KEY')}
 
         try:
+            # deepcode ignore TLSCertVerificationDisabled:
+            # self-signed SSL certificates...
             request = requests.post(
                 url, headers=headers,
                 verify=False)
